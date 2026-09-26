@@ -1,0 +1,328 @@
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+
+local Player = Players.LocalPlayer
+local PlayerGui = Player:WaitForChild("PlayerGui")
+
+local GUI_NAME = "ZhiKaiFPS"
+
+local Old = PlayerGui:FindFirstChild(GUI_NAME)
+if Old then
+	Old:Destroy()
+end
+
+local Gui = Instance.new("ScreenGui")
+Gui.Name = GUI_NAME
+Gui.ResetOnSpawn = false
+Gui.IgnoreGuiInset = true
+Gui.DisplayOrder = 999999
+Gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+Gui.Parent = PlayerGui
+
+local Main = Instance.new("Frame")
+Main.Size = UDim2.fromOffset(285, 145)
+Main.Position = UDim2.fromOffset(18, 18)
+Main.BackgroundColor3 = Color3.fromRGB(12, 14, 19)
+Main.BackgroundTransparency = 0.06
+Main.BorderSizePixel = 0
+Main.ClipsDescendants = true
+Main.Parent = Gui
+
+local Corner = Instance.new("UICorner")
+Corner.CornerRadius = UDim.new(0, 18)
+Corner.Parent = Main
+
+local Stroke = Instance.new("UIStroke")
+Stroke.Thickness = 1
+Stroke.Transparency = 0.2
+Stroke.Color = Color3.fromRGB(80, 88, 108)
+Stroke.Parent = Main
+
+local Gradient = Instance.new("UIGradient")
+Gradient.Rotation = 135
+Gradient.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(30, 34, 46)),
+	ColorSequenceKeypoint.new(0.5, Color3.fromRGB(15, 18, 25)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(9, 11, 15))
+})
+Gradient.Parent = Main
+
+local Accent = Instance.new("Frame")
+Accent.Size = UDim2.new(1, 0, 0, 2)
+Accent.Position = UDim2.fromOffset(0, 0)
+Accent.BorderSizePixel = 0
+Accent.BackgroundColor3 = Color3.fromRGB(90, 255, 150)
+Accent.Parent = Main
+
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, -50, 0, 32)
+Title.Position = UDim2.fromOffset(15, 7)
+Title.BackgroundTransparency = 1
+Title.Text = "志凯脚本FPS"
+Title.TextColor3 = Color3.fromRGB(245, 247, 252)
+Title.TextSize = 15
+Title.Font = Enum.Font.GothamBold
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Parent = Main
+
+local Status = Instance.new("Frame")
+Status.Size = UDim2.fromOffset(8, 8)
+Status.Position = UDim2.new(1, -27, 0, 19)
+Status.BorderSizePixel = 0
+Status.BackgroundColor3 = Color3.fromRGB(90, 255, 150)
+Status.Parent = Main
+
+local StatusCorner = Instance.new("UICorner")
+StatusCorner.CornerRadius = UDim.new(1, 0)
+StatusCorner.Parent = Status
+
+local Close = Instance.new("TextButton")
+Close.Size = UDim2.fromOffset(25, 25)
+Close.Position = UDim2.new(1, -38, 0, 5)
+Close.BackgroundTransparency = 1
+Close.Text = "×"
+Close.TextColor3 = Color3.fromRGB(125, 130, 145)
+Close.TextSize = 19
+Close.Font = Enum.Font.GothamBold
+Close.AutoButtonColor = false
+Close.Parent = Main
+
+local FPS = Instance.new("TextLabel")
+FPS.Size = UDim2.new(1, -30, 0, 48)
+FPS.Position = UDim2.fromOffset(15, 36)
+FPS.BackgroundTransparency = 1
+FPS.Text = "--"
+FPS.TextColor3 = Color3.fromRGB(90, 255, 150)
+FPS.TextSize = 38
+FPS.Font = Enum.Font.GothamBlack
+FPS.TextXAlignment = Enum.TextXAlignment.Left
+FPS.Parent = Main
+
+local FPSUnit = Instance.new("TextLabel")
+FPSUnit.Size = UDim2.fromOffset(40, 20)
+FPSUnit.Position = UDim2.fromOffset(100, 58)
+FPSUnit.BackgroundTransparency = 1
+FPSUnit.Text = "FPS"
+FPSUnit.TextColor3 = Color3.fromRGB(145, 151, 165)
+FPSUnit.TextSize = 11
+FPSUnit.Font = Enum.Font.GothamMedium
+FPSUnit.TextXAlignment = Enum.TextXAlignment.Left
+FPSUnit.Parent = Main
+
+local Divider = Instance.new("Frame")
+Divider.Size = UDim2.new(1, -30, 0, 1)
+Divider.Position = UDim2.fromOffset(15, 86)
+Divider.BackgroundColor3 = Color3.fromRGB(60, 65, 80)
+Divider.BackgroundTransparency = 0.45
+Divider.BorderSizePixel = 0
+Divider.Parent = Main
+
+local Current = Instance.new("TextLabel")
+Current.Size = UDim2.fromOffset(80, 25)
+Current.Position = UDim2.fromOffset(15, 94)
+Current.BackgroundTransparency = 1
+Current.Text = "--"
+Current.TextColor3 = Color3.fromRGB(195, 199, 210)
+Current.TextSize = 11
+Current.Font = Enum.Font.GothamMedium
+Current.TextXAlignment = Enum.TextXAlignment.Left
+Current.Parent = Main
+
+local Average = Instance.new("TextLabel")
+Average.Size = UDim2.fromOffset(80, 25)
+Average.Position = UDim2.fromOffset(103, 94)
+Average.BackgroundTransparency = 1
+Average.Text = "--"
+Average.TextColor3 = Color3.fromRGB(195, 199, 210)
+Average.TextSize = 11
+Average.Font = Enum.Font.GothamMedium
+Average.TextXAlignment = Enum.TextXAlignment.Left
+Average.Parent = Main
+
+local Low = Instance.new("TextLabel")
+Low.Size = UDim2.fromOffset(85, 25)
+Low.Position = UDim2.fromOffset(190, 94)
+Low.BackgroundTransparency = 1
+Low.Text = "--"
+Low.TextColor3 = Color3.fromRGB(195, 199, 210)
+Low.TextSize = 11
+Low.Font = Enum.Font.GothamMedium
+Low.TextXAlignment = Enum.TextXAlignment.Left
+Low.Parent = Main
+
+local FrameTime = Instance.new("TextLabel")
+FrameTime.Size = UDim2.new(1, -30, 0, 18)
+FrameTime.Position = UDim2.fromOffset(15, 120)
+FrameTime.BackgroundTransparency = 1
+FrameTime.Text = "-- ms"
+FrameTime.TextColor3 = Color3.fromRGB(110, 116, 132)
+FrameTime.TextSize = 10
+FrameTime.Font = Enum.Font.Gotham
+FrameTime.TextXAlignment = Enum.TextXAlignment.Left
+FrameTime.Parent = Main
+
+local BarBackground = Instance.new("Frame")
+BarBackground.Size = UDim2.new(1, -30, 0, 4)
+BarBackground.Position = UDim2.fromOffset(15, 137)
+BarBackground.BackgroundColor3 = Color3.fromRGB(38, 42, 52)
+BarBackground.BorderSizePixel = 0
+BarBackground.Parent = Main
+
+local BarCorner = Instance.new("UICorner")
+BarCorner.CornerRadius = UDim.new(1, 0)
+BarCorner.Parent = BarBackground
+
+local Bar = Instance.new("Frame")
+Bar.Size = UDim2.fromScale(0, 1)
+Bar.BackgroundColor3 = Color3.fromRGB(90, 255, 150)
+Bar.BorderSizePixel = 0
+Bar.Parent = BarBackground
+
+local BarFillCorner = Instance.new("UICorner")
+BarFillCorner.CornerRadius = UDim.new(1, 0)
+BarFillCorner.Parent = Bar
+
+local function GetColor(Value)
+	if Value >= 120 then
+		return Color3.fromRGB(90, 255, 150)
+	elseif Value >= 60 then
+		return Color3.fromRGB(145, 255, 105)
+	elseif Value >= 45 then
+		return Color3.fromRGB(255, 220, 90)
+	elseif Value >= 30 then
+		return Color3.fromRGB(255, 165, 75)
+	else
+		return Color3.fromRGB(255, 85, 100)
+	end
+end
+
+local Dragging = false
+local DragStart
+local StartPosition
+
+Title.InputBegan:Connect(function(Input)
+	if Input.UserInputType == Enum.UserInputType.MouseButton1
+		or Input.UserInputType == Enum.UserInputType.Touch then
+
+		Dragging = true
+		DragStart = Input.Position
+		StartPosition = Main.Position
+	end
+end)
+
+UserInputService.InputEnded:Connect(function(Input)
+	if Input.UserInputType == Enum.UserInputType.MouseButton1
+		or Input.UserInputType == Enum.UserInputType.Touch then
+
+		Dragging = false
+	end
+end)
+
+UserInputService.InputChanged:Connect(function(Input)
+	if not Dragging then
+		return
+	end
+
+	if Input.UserInputType == Enum.UserInputType.MouseMovement
+		or Input.UserInputType == Enum.UserInputType.Touch then
+
+		local Delta = Input.Position - DragStart
+
+		Main.Position = UDim2.new(
+			StartPosition.X.Scale,
+			StartPosition.X.Offset + Delta.X,
+			StartPosition.Y.Scale,
+			StartPosition.Y.Offset + Delta.Y
+		)
+	end
+end)
+
+Close.MouseButton1Click:Connect(function()
+	Gui:Destroy()
+end)
+
+local Frames = 0
+local TotalFrames = 0
+local TotalTime = 0
+local UpdateTimer = 0
+
+local Samples = table.create(240)
+local SampleIndex = 0
+local SampleCount = 0
+
+RunService.RenderStepped:Connect(function(DeltaTime)
+	Frames += 1
+	TotalFrames += 1
+	TotalTime += DeltaTime
+	UpdateTimer += DeltaTime
+
+	local InstantFPS = 1 / math.max(DeltaTime, 1 / 1000)
+
+	SampleIndex += 1
+
+	if SampleIndex > 240 then
+		SampleIndex = 1
+	end
+
+	Samples[SampleIndex] = InstantFPS
+
+	if SampleCount < 240 then
+		SampleCount += 1
+	end
+
+	if UpdateTimer >= 0.25 then
+		local CurrentFPS = Frames / UpdateTimer
+		local AverageFPS = TotalFrames / math.max(TotalTime, 0.001)
+
+		local Sorted = table.create(SampleCount)
+
+		for i = 1, SampleCount do
+			Sorted[i] = Samples[i]
+		end
+
+		table.sort(Sorted)
+
+		local LowIndex = math.max(1, math.floor(SampleCount * 0.01))
+		local LowFPS = Sorted[LowIndex] or CurrentFPS
+
+		local FrameMS = DeltaTime * 1000
+		local Color = GetColor(CurrentFPS)
+
+		FPS.Text = tostring(math.floor(CurrentFPS + 0.5))
+		FPS.TextColor3 = Color
+
+		Current.Text = tostring(math.floor(CurrentFPS + 0.5))
+		Average.Text = tostring(math.floor(AverageFPS + 0.5))
+		Low.Text = tostring(math.floor(LowFPS + 0.5))
+
+		FrameTime.Text = string.format("%.2f ms", FrameMS)
+
+		local Fill = math.clamp(CurrentFPS / 144, 0, 1)
+
+		TweenService:Create(
+			Bar,
+			TweenInfo.new(0.2, Enum.EasingStyle.Quad),
+			{
+				Size = UDim2.fromScale(Fill, 1),
+				BackgroundColor3 = Color
+			}
+		):Play()
+
+		TweenService:Create(
+			Status,
+			TweenInfo.new(0.2),
+			{BackgroundColor3 = Color}
+		):Play()
+
+		TweenService:Create(
+			Accent,
+			TweenInfo.new(0.2),
+			{BackgroundColor3 = Color}
+		):Play()
+
+		Frames = 0
+		UpdateTimer = 0
+	end
+end)
